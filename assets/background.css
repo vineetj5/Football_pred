@@ -1,0 +1,16 @@
+/* Apply watermark image as a background overlay for the entire page */
+body::before {
+    content: "";
+    background-image: url("/assets/premier-league1.png"); /* Path to watermark */
+    background-repeat: no-repeat;
+    background-size: 40%; /* Adjust size as needed */
+    background-position: center;
+    opacity: 0.1; /* Set low opacity for watermark effect */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1; /* Send to back so it doesn't overlay content */
+    pointer-events: none; /* Prevent interference with content clicks */
+}
