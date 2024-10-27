@@ -1,4 +1,3 @@
-
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
@@ -10,6 +9,7 @@ from dash import dcc, html, Input, Output
 from dash.exceptions import PreventUpdate
 
 app = dash.Dash(__name__)
+server = app.server
 
 app.layout = html.Div([
     html.H1("Team Statistics Dashboard"),
