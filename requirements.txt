@@ -3,3 +3,4 @@ numpy
 seaborn 
 plotly
 dash
+gunicorn
