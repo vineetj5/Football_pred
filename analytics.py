@@ -160,7 +160,7 @@ def update_output(n_clicks,teamName):
         color_discrete_sequence=['violet', 'blue', 'orange']  # Custom colors
     )
 
-    fig6.update_traces(textposition='inside', textinfo='percent+label')
+    fig6.update_traces(textposition='inside',  texttemplate='%{label}<br>%{value} goals')
 
     ftgsHome_df = df_team[df_team['HomeTeam'] == teamName]['FT_goals_scored'].sum()
     ftgsAway_df = df_team[df_team['AwayTeam'] == teamName]['FT_goals_scored'].sum()
@@ -174,6 +174,10 @@ def update_output(n_clicks,teamName):
         names=labels,  # The column with season names
         title=f'Goals Scored by {teamName} - Home vs Away',
         color_discrete_sequence=colors  # Custom colors
+    )
+    fig7.update_traces(
+        textposition='inside',
+        texttemplate='%{label}<br>%{value} goals<br>%{percent}'
     )
 
     with open(f'final_report_{teamName}.html','w') as f:
