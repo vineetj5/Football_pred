@@ -11,6 +11,20 @@ from dash.exceptions import PreventUpdate
 app = dash.Dash(__name__)
 server = app.server
 
+dropdown_options = []
+teamNamesList = ['Fulham', 'Crystal Palace', 'Liverpool', 'West Ham', 'West Brom',
+       'Tottenham', 'Brighton', 'Sheffield United', 'Everton', 'Leeds',
+       'Man United', 'Arsenal', 'Southampton', 'Newcastle', 'Chelsea',
+       'Leicester', 'Aston Villa', 'Wolves', 'Burnley', 'Man City',
+       'Brentford', 'Watford', 'Norwich', 'Bournemouth', 'Nottingham']
+teamNamesList.sort()
+for i in teamNamesList:
+    option = {'label': html.Div([
+                html.Img(src=f'/assets/{i}_logo.webp', style={'width': '20px', 'height': '20px', 'marginRight': '10px'}),
+                i
+            ]), 'value': i}
+    dropdown_options.append(option)
+
 app.layout = html.Div([
       html.Div(id="watermark", style={
         "backgroundImage": f"url('/assets/premier-league1.png')",
@@ -30,7 +44,11 @@ app.layout = html.Div([
     
     # Input field for team name
     html.Label("Enter Team Name:"),
-    dcc.Input(id='team-input', type='text', placeholder='Enter team name'),
+    dcc.Dropdown(
+        id='team-input',
+        options= dropdown_options,
+        placeholder='Select a team'
+    ),
     html.Button('Submit', id='submit-button', n_clicks=0),
     
     # Area to display the visualizations
