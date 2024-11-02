@@ -12,6 +12,20 @@ app = dash.Dash(__name__)
 server = app.server
 
 app.layout = html.Div([
+      html.Div(id="watermark", style={
+        "backgroundImage": f"url('/assets/premier-league1.png')",
+        "backgroundRepeat": "no-repeat",
+        "backgroundSize": "40%",  # Adjust size as needed
+        "backgroundPosition": "center",
+        "opacity": "0.1",  # Low opacity for subtle watermark
+        "position": "fixed",
+        "top": "0",
+        "left": "0",
+        "width": "100vw",
+        "height": "100vh",
+        "zIndex": "-1",  # Send it to the back
+        "pointerEvents": "none"  # Prevent interference with other elements
+    }),
     html.H1("Team Statistics Dashboard"),
     
     # Input field for team name
@@ -25,6 +39,7 @@ app.layout = html.Div([
 
 @app.callback(
     Output('output-container', 'children'),
+    Output('watermark', 'style'),
     [Input('submit-button', 'n_clicks')],
     [Input('team-input', 'value')]
 )
@@ -83,6 +98,7 @@ def update_output(n_clicks,teamName):
     if n_clicks == 0 or not teamName:
         raise PreventUpdate
     
+    watermark_style = {'display': 'none'}
     
     f1 = r'2020-2021.csv'
     f2 = r'2021-2022.csv'
@@ -97,7 +113,7 @@ def update_output(n_clicks,teamName):
     df_team = df[ (df['HomeTeam'] == teamName) | (df['AwayTeam'] == teamName) ]
 
     if df_team.empty:
-        return html.Div(f"No data found for team '{teamName}'")
+        return html.Div(f"No data found for team '{teamName}'"),watermark_style
     
     df_team['Date'] = pd.to_datetime(df['Date'],format='%d/%m/%Y')
     df_team['FT_Result'] = df_team.apply(determine_result,axis=1)
@@ -129,20 +145,20 @@ def update_output(n_clicks,teamName):
     cb_df = pd.DataFrame({'Draw->Win': d2w, 'Lose->Win': l2w})
 
     # ax = cb_df.plot(kind='bar',color=['Blue','Green'])
-    fig3 = px.bar(cb_df,barmode='group',color_discrete_map={'Draw->Win': 'blue','Lose->Win': 'green'},title='Comebacks')
+    fig3 = px.bar(cb_df,barmode='group',color_discrete_map={'Draw->Win': 'blue','Lose->Win': 'green'},title='Second-Half Surge')
 
 
     gs_df = pd.DataFrame({'Lose->Draw': l2d})
 
     # ax = gs_df.plot(kind='bar',color=['Orange'])
     # plt.title('Gaining atleast Something')
-    fig4 = px.bar(gs_df,color_discrete_map={'Lose->Draw': 'orange'},title='Gaining atleast Something')
+    fig4 = px.bar(gs_df,color_discrete_map={'Lose->Draw': 'orange'},title='Turning the Tide')
 
     ga_df = pd.DataFrame({'Win->Loss': w2l, 'Win->Draw': w2d,'Draw->Loss':d2l})
 
     # ax = ga_df.plot(kind='bar',color=['Red','Grey','pink'])
     # plt.title('GiveAway')
-    fig5 = px.bar(ga_df,barmode='group',color_discrete_map={'Win->Loss': 'red','Win->Draw': 'grey','Draw->Loss':'pink'},title='GiveAway')
+    fig5 = px.bar(ga_df,barmode='group',color_discrete_map={'Win->Loss': 'red','Win->Draw': 'grey','Draw->Loss':'pink'},title='From Victory to defeat')
 
     ft_goals = df_team['FT_goals_scored'].sum()
     ft_goals_conceded = df_team['FT_goals_conceded'].sum()
@@ -232,7 +248,7 @@ def update_output(n_clicks,teamName):
         dcc.Graph(figure=fig7),
         html.Div(f"The above pie chart depicts the distribution of goals scored by {teamName} in home and away matches.", style={'margin-bottom': '20px'})
         
-    ]
-    
+    ],watermark_style  # Hide watermark 
+        
 if __name__ == '__main__':
     app.run_server(debug=True)
